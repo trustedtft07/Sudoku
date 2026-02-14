@@ -36,9 +36,55 @@ bool SudokuEngine::setCell(int row, int col, int value) {
     return true;
 }
 
-bool SudokuEngine::applyHint() { return false; }
-bool SudokuEngine::isSolved() const { return false; }
-bool SudokuEngine::isConflict(int, int) const { return false; }
+bool SudokuEngine::applyHint() {
+    std::array<int, kSize * kSize> emptyCells{};
+    int count = 0;
+    for (int i = 0; i < kSize * kSize; ++i) {
+        if (board_[i] == 0) {
+            emptyCells[count++] = i;
+        }
+    }
+    if (count == 0) return false;
+
+    std::uniform_int_distribution<int> dist(0, count - 1);
+    int chosen = emptyCells[dist(rng_)];
+    board_[chosen] = solution_[chosen];
+    fixed_[chosen] = 1;
+    return true;
+}
+
+bool SudokuEngine::isSolved() const {
+    for (int r = 0; r < kSize; ++r) {
+        for (int c = 0; c < kSize; ++c) {
+            int val = board_[r * kSize + c];
+            if (val == 0 || isConflict(r, c)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool SudokuEngine::isConflict(int row, int col) const {
+    int val = board_[row * kSize + col];
+    if (val == 0) return false;
+
+    for (int i = 0; i < kSize; ++i) {
+        if (i != col && board_[row * kSize + i] == val) return true;
+        if (i != row && board_[i * kSize + col] == val) return true;
+    }
+
+    int boxRow = (row / 3) * 3;
+    int boxCol = (col / 3) * 3;
+    for (int r = boxRow; r < boxRow + 3; ++r) {
+        for (int c = boxCol; c < boxCol + 3; ++c) {
+            if ((r != row || c != col) && board_[r * kSize + c] == val) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 bool SudokuEngine::fillGrid(Grid& grid, int index) {
     if (index == kSize * kSize) return true;
