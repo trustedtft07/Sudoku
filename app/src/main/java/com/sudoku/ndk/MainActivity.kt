@@ -32,6 +32,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_erase).setOnClickListener { placeValue(0) }
+        findViewById<Button>(R.id.btn_hint).setOnClickListener {
+            if (SudokuNative.applyHint()) {
+                boardView.refreshFromNative()
+                checkVictory()
+            }
+        }
+
         findViewById<Button>(R.id.btn_easy).setOnClickListener { startNewGame(28, "Mudah") }
         findViewById<Button>(R.id.btn_medium).setOnClickListener { startNewGame(38, "Sedang") }
         findViewById<Button>(R.id.btn_hard).setOnClickListener { startNewGame(48, "Sulit") }
