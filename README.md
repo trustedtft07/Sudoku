@@ -9,3 +9,7 @@ Game Sudoku 9x9 untuk Android dengan engine generator, backtracking solver, dan 
 
 ## Build & Run
 Buka folder project di Android Studio (pastikan NDK & CMake terpasang di SDK Manager) lalu jalankan ke emulator atau perangkat Android.
+
+## Arsitektur
+- C++17 (sudoku_engine.cpp) untuk generator puzzle dan solver
+- JNI (jni_bridge.cpp) sebagai penghubung ke UI Kotlin
